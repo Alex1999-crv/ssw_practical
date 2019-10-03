@@ -262,7 +262,6 @@ lexem synt_T::PeekLex(int n) {
 		return std::make_pair("", unknown_tk);
 	}
 }
-
 bool synt_T::FileEOF()
 {
 	return code.eof();
@@ -531,3 +530,10 @@ int Parse2(const std::string& file_path) {
 		return -EXIT_FAILURE;
 	}
 }
+void  buildTreeStub(lexem lex);
+int   expressionParse(lexem lex, synt_T& parser);
+int   stateParse(lexem& lex, synt_T& parser);
+int   compoundParse(lexem lex, synt_T& parser);
+lexem vardParse(lexem lex, synt_T& parser);
+int   blockParse(lexem lex, synt_T& parser);
+int   programParse(synt_T& parser);
