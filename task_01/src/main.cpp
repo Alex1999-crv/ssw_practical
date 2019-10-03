@@ -10,7 +10,7 @@
 
 int main() {
 	std::cout << "Ah, here we go again" << std::endl;
-	Parse2("test.p");	
+	Prs2("test.p");	
 	
 	return 0;
 }

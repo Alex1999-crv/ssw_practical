@@ -11,6 +11,6 @@
 #include <string>
 
 
-int Parse2(const std::string &file_path);
+int Prs2(const std::string &file_path);
 
 #endif //LECS_PARS_DAY2_H

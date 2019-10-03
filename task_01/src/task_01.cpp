@@ -1,6 +1,4 @@
 #include "task_01.h"
-
-
 /**
  * Given grammar:
  * <Soft> ::= program <id> ; <block> .
@@ -38,10 +36,7 @@ enum tokens {
 	plus_tk,//'+'
 	minus_tk//'-'
 };
-
 typedef std::pair<std::string, tokens> lexem;
-
-
 typedef struct synt {
 	char  GetCurrentCurs();     // получили текущий символ в потоке
 	lexem GetLex();             // переход к след. лексеме
@@ -56,14 +51,10 @@ typedef struct synt {
 	int   GetCurrentLine();
 private:
 	int LineN = 1;
-
 	std::ifstream code;         // input stream of Pascal code
-
 	char Curs{ -1 };         // cursor of stream
-
 	char getChar();            // get next character in stream
 } synt_T;
-
 struct TListElem//список
 {
 	std::string Info;
@@ -79,12 +70,12 @@ TListElem* Addinfo(std::string info, std::string Type, TListElem* pList)//доб
 
 	return pElem;
 }
-int SrList(TListElem* pList, std::string ident)//поиск в списке
+int SrList(TListElem* pList, std::string Identif)//поиск в списке
 {
 	TListElem* pElem = pList;
 	while (pElem != NULL)
 	{
-		if (pElem->Info == ident)
+		if (pElem->Info == Identif)
 			return 1;
 		pElem = pElem->Link;
 	}
@@ -92,34 +83,32 @@ int SrList(TListElem* pList, std::string ident)//поиск в списке
 }
 //структура для работы с переменными
 struct variable {
-	void VarSave(std::string ident, std::string Type);//сохранение переменной
-	int VarSearch(std::string ident);//поиск переменной
+	void VarSave(std::string Identif, std::string Type);//сохранение переменной
+	int VarSearch(std::string Identif);//поиск переменной
 	TListElem* VarAr = NULL;
 } VarList;
-
-void variable::VarSave(std::string ident, std::string Type)
+void variable::VarSave(std::string Identif, std::string Type)
 {
-	VarAr = Addinfo(ident, Type, VarAr);
+	VarAr = Addinfo(Identif, Type, VarAr);
 }
-int variable::VarSearch(std::string ident)
+int variable::VarSearch(std::string Identif)
 {
-	return SrList(VarAr, ident);
+	return SrList(VarAr, Identif);
 }
-void ErrMsg(int StrN, lexem Lex, std::string Type)//вывод инф. об ошибках
+void ErrMsg(int N, lexem Lex, std::string Type)//вывод инф. об ошибках
 {
-
 	//if (StrN != "")
-		std::cout << "Ошибка в строке " << StrN << " in lex: \"" << Lex.first << "\"\nТип ошибки: " << Type << std::endl;
+		std::cout << "Ошибка в строке " << N << " in lex: \"" << Lex.first << "\"\nТип ошибки: " << Type << std::endl;
 	//else
-		std::cout << "Ошибка в строке " << StrN << std::endl;
+		std::cout << "Ошибка в строке " << N << std::endl;
 }
 void ErrMsg(std::string Type)
 {
 	std::cout << "\nТип ошибки: " << Type << std::endl;
 }
-void ErrMsg(int StrN, char ch, std::string Type)
+void ErrMsg(int N, char ch, std::string Type)
 {
-	std::cout << "Ошибка в строке " << StrN << " in lex: \"" << ch << "\"\nТип ошибки: " << Type << std::endl;
+	std::cout << "Ошибка в строке " << N << " in lex: \"" << ch << "\"\nТип ошибки: " << Type << std::endl;
 }
 char synt_T::getChar() {
 	if (code.fail()) {
@@ -143,12 +132,9 @@ char synt_T::PeekChar(int n) {
 	try {
 		char ch = -1;
 		int curr_pos = code.tellg(); // получить текущую позицию в потоке
-
 		code.seekg(curr_pos + n, code.beg); // установите необходимое положение в потоке
 		code >> std::noskipws >> ch;    // получить символ из потока с помощью ' '
 		code.seekg(curr_pos, code.beg); // возврат предыдущей позиции в потоке
-
-
 		return ch;
 	}
 	catch (std::exception& exp) {
@@ -286,13 +272,6 @@ int   synt_T::GetCurrentLine()
 {
 	return LineN;
 }
-void  buildTreeStub(lexem lex);
-int   expressionParse(lexem lex, synt_T& parser);
-int   stateParse(lexem& lex, synt_T& parser);
-int   compoundParse(lexem lex, synt_T& parser);
-lexem vardParse(lexem lex, synt_T& parser);
-int   blockParse(lexem lex, synt_T& parser);
-int   programParse(synt_T& parser);
 void buildTreeStub(lexem lex) {
 	std::cout << "<D> stub, get lexem " << lex.first << " (" << lex.second << ")"
 			  << std::endl;
@@ -428,7 +407,7 @@ lexem vardParse(lexem lex, synt_T& parser) {
 
 	return lex;
 }
-int blockParse(lexem lex, synt_T& parser) {
+int blockPrs(lexem lex, synt_T& parser) {
 	lex = parser.GetLex();
 	switch (lex.second) { // var / begin
 	case var_tk: {   // var a, b: integer;
@@ -470,7 +449,7 @@ int blockParse(lexem lex, synt_T& parser) {
 
 	return EXIT_SUCCESS;
 }
-int programParse(synt_T& parser) {
+int programPrs(synt_T& parser) {
 	auto lex = parser.GetLex();
 	if (lex.second == program_tk) {
 		lex = parser.GetLex();
@@ -499,7 +478,7 @@ int programParse(synt_T& parser) {
 		return -EXIT_FAILURE;
 	}
 }
-int Parse2(const std::string& file_path) {
+int Prs2(const std::string& file_path) {
 	try {
 		synt_T example_synt;
 
@@ -510,14 +489,14 @@ int Parse2(const std::string& file_path) {
 			return -EXIT_FAILURE;
 		}
 
-		if (programParse(example_synt) != 0) {
+		if (programPrs(example_synt) != 0) {
 			example_synt.FileClose();
 			return -EXIT_FAILURE;
 		}
 
 		lexem lex;
 		while (!example_synt.FileEOF() && !example_synt.FileFail()) {
-			if (blockParse(lex, example_synt) == 1)
+			if (blockPrs(lex, example_synt) == 1)
 				break;
 		}
 
@@ -535,5 +514,5 @@ int   expressionParse(lexem lex, synt_T& parser);
 int   stateParse(lexem& lex, synt_T& parser);
 int   compoundParse(lexem lex, synt_T& parser);
 lexem vardParse(lexem lex, synt_T& parser);
-int   blockParse(lexem lex, synt_T& parser);
-int   programParse(synt_T& parser);
+int   blockPrs(lexem lex, synt_T& parser);
+int   programPrs(synt_T& parser);
